@@ -15,6 +15,11 @@ object Stock {
     )
   }
 
+  def offers = Map(
+    "apple" ->(2, 1),
+    "orange" ->(3, 2)
+  )
+
   /**
     * parses the user arguments/input to return a map of
     * the item names and amounts

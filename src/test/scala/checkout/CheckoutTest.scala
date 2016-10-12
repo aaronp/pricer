@@ -5,7 +5,10 @@ import org.scalatest.{Matchers, WordSpec}
 
 class CheckoutTest extends WordSpec with Matchers {
   "Checkout.price three for two oranges" should {
-    val offerCheckout = Checkout(Stock.priceByItem)
+    val offerCheckout = {
+      val basic = Checkout(Stock.priceByItem)
+      Checkout.offer(basic, Stock.offers)
+    }
 
     val orangePrices = Seq(
       0,
@@ -28,7 +31,10 @@ class CheckoutTest extends WordSpec with Matchers {
     }
   }
   "Checkout.price two for one apples" should {
-    val offerCheckout = Checkout(Stock.priceByItem)
+    val offerCheckout = {
+      val basic = Checkout(Stock.priceByItem)
+      Checkout.offer(basic, Stock.offers)
+    }
 
     "return 0 for empty carts" in {
       offerCheckout.calculateCartTotal(Map.empty) shouldBe 0
