@@ -30,4 +30,25 @@ object Checkout {
   }
 
   def apply[Price: Numeric](prices: Map[String, Price]): Checkout[String, Price] = new Pricer[Price](prices)
+
+  class OfferCheckout[Price: Numeric](
+                                       basicCheckout: Checkout[String, Price],
+                                       offers: Map[String, (Int, Int)]
+                                     ) extends Checkout[String, Price] {
+    def price(item: String, amount: Int) = {
+      val offerPriceOpt = offers.get(item).map {
+        case (oldAmount, newAmount) =>
+          val reducedAmount = (amount % oldAmount) * newAmount
+          val offerPrice = basicCheckout.price(item, reducedAmount)
+          val remaining = amount / oldAmount
+          val remainingPrice = basicCheckout.price(item, remaining)
+          implicitly[Numeric[Price]].plus(offerPrice, remainingPrice)
+      }
+      offerPriceOpt.getOrElse(basicCheckout.price(item, amount))
+    }
+  }
+
+  def offer[Price: Numeric](base: Checkout[String, Price]) = {
+
+  }
 }
